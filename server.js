@@ -94,7 +94,7 @@ app.get('/', function (req, res) {
   }
 });
 
-app.get('/.well-known',function (req, res) {
+app.get('/.well-known/*',function (req, res) {
   res.status(200).send('OK');
 });
 
