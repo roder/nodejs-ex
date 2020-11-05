@@ -23,10 +23,6 @@ app.use(function(err, req, res, next){
   res.status(500).send('Something bad happened!');
 });
 
-initDb(function(err){
-  console.log('Error connecting to Mongo. Message:\n'+err);
-});
-
 app.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
 
