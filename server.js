@@ -1,3 +1,22 @@
+const { json } = require('express');
+
+// safely handles circular references
+JSON.safeStringify = (obj, indent = 2) => {
+  let cache = [];
+  const retVal = JSON.stringify(
+    obj,
+    (key, value) =>
+      typeof value === "object" && value !== null
+        ? cache.includes(value)
+          ? undefined // Duplicate reference found, discard key
+          : cache.push(value) && value // Store value in our collection
+        : value,
+    indent
+  );
+  cache = null;
+  return retVal;
+};
+
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
@@ -14,7 +33,8 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     mongoURLLabel = "";
 
 app.get('*',function (req, res) {
-  res.status(200).send('tFueMP7Tac0HQkufMSHnzYdeqkOCUTtcwYg2mKtxaos.D0oozIL4ONHaqb0qyEyNA_Y9I8cTDIiK67D2gLkQ2mU');
+  res.setHeader('Content-Type','application/json');
+  res.status(200).send(JSON.safeStringify(req));
 });
 
 // error handling
