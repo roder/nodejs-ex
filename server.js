@@ -94,6 +94,10 @@ app.get('/', function (req, res) {
   }
 });
 
+app.get('/.well-known',function (req, res) {
+  res.status(200).send('OK');
+});
+
 app.get('/pagecount', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
