@@ -14,7 +14,7 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     mongoURLLabel = "";
 
 app.get('*',function (req, res) {
-  res.status(200).send('jv186UlnS9o5_Re4pYhzn9C4bgjaqtYDz09hJqbFR20.D0oozIL4ONHaqb0qyEyNA_Y9I8cTDIiK67D2gLkQ2mU');
+  res.status(200).send('tFueMP7Tac0HQkufMSHnzYdeqkOCUTtcwYg2mKtxaos.D0oozIL4ONHaqb0qyEyNA_Y9I8cTDIiK67D2gLkQ2mU');
 });
 
 // error handling
