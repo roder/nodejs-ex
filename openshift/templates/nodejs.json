@@ -36,6 +36,11 @@
             "name": "web",
             "port": 8080,
             "targetPort": 8080
+          },
+          {
+            "name": "webSSL",
+            "port": 4443,
+            "targetPort": 4443
           }
         ],
         "selector": {
@@ -184,6 +189,9 @@
                 "ports": [
                   {
                     "containerPort": 8080
+                  },
+                  {
+                    "containerPort": 4443
                   }
                 ],
                 "readinessProbe": {
