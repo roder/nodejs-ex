@@ -1,4 +1,5 @@
 const { json } = require('express');
+const os = require("os");
 
 // safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
@@ -28,13 +29,23 @@ app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
-    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
-    mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
-    mongoURLLabel = "";
+    ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
 app.get('*',function (req, res) {
   res.setHeader('Content-Type','application/json');
-  res.status(200).send(JSON.safeStringify(req));
+  let msg = {
+    "machine-name": process.env.NAME,
+    "headers": req.headers,
+    "cookies": req.cookies,
+    "hostname": req.hostname,
+    "method": req.method,
+    "params": req.params,
+    "path": req.path,
+    "protocol": req.protocol,
+    "query": req.query,
+    "route": req.route
+  }
+  res.status(200).send(JSON.safeStringify(msg));
 });
 
 // error handling
