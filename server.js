@@ -3,6 +3,12 @@ const os = require("os");
 const { networkInterfaces } = require('os');
 const nets = networkInterfaces();
 const networkInfo = {};
+const http = require('http');
+const fs = require('fs');
+
+//Path to key and cert
+const sslKey = "/tmp/key.pem";
+const sslCert = "/tmp/cert.pem";
 
 // safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
@@ -32,6 +38,7 @@ app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
+    sslport = process.env.SSLPORT || process.env.OPENSHIFT_NODEJS_SSLPORT || 4443,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
     
@@ -73,7 +80,24 @@ app.use(function(err, req, res, next){
   res.status(500).send('Something bad happened!');
 });
 
-app.listen(port, ip);
-console.log('Server running on http://%s:%s', ip, port);
+const httpServer = http.createServer(app);
+httpServer.listen(port, ip, ()=>{
+  console.log('Server running on http://%s:%s', ip, port);
+});
+
+try {
+  if (fs.existsSync(sslKey) && fs.existsSync(sslCert)) {
+    const https = require('https');
+    const httpsServer = https.createServer({
+      key: fs.readFileSync(sslKey),
+      cert: fs.readFileSync(sslCert)
+    },app);
+    httpsServer.listen(sslport, ip, ()=>{ 
+      console.log('SSL Server running on https://%s:%s', ip, sslport);
+    });
+  }
+} catch(err) {
+  console.error(err)
+}
 
 module.exports = app ;
