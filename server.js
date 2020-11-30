@@ -7,8 +7,8 @@ const http = require('http');
 const fs = require('fs');
 
 //Path to key and cert
-const sslKey = "/tmp/key.pem";
-const sslCert = "/tmp/cert.pem";
+const sslKey = "/tmp/ssl/key.pem";
+const sslCert = "/tmp/ssl/cert.pem";
 
 // safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
