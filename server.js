@@ -1,5 +1,8 @@
 const { json } = require('express');
 const os = require("os");
+const { networkInterfaces } = require('os');
+const nets = networkInterfaces();
+const networkInfo = {};
 
 // safely handles circular references
 JSON.safeStringify = (obj, indent = 2) => {
@@ -31,10 +34,26 @@ app.use(morgan('combined'))
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
+    
+    
+for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+        // internal (i.e. 127.0.0.1) addresses
+        if (!net.internal) {
+            if (!networkInfo[name]) {
+                networkInfo[name] = [];
+            }
+
+            networkInfo[name].push(net.address);
+        }
+    }
+}
+
 app.get('*',function (req, res) {
   res.setHeader('Content-Type','application/json');
   let msg = {
-    "machine-name": process.env.NAME,
+    "machine-name": os.hostname(),
+    "network": networkInfo,
     "headers": req.headers,
     "cookies": req.cookies,
     "hostname": req.hostname,
