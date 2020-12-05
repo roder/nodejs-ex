@@ -4,7 +4,7 @@ metadata:
 projects:
   - name: nodejs-ex
     source:
-      location: 'https://github.com/outcast/nodejs-ex'
+      location: 'https://github.com/roder/nodejs-ex'
       type: git
       branch: master
 components:
